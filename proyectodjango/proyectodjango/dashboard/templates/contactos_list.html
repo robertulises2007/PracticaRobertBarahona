@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">
+        Lista de Contactos
+    </h2>
+
+    <form method="GET" class="mb-4">
+        <div class="flex items-center">
+        <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Buscar por nombre" 
+                class="w-full border border-gray-300 rounded-l-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+        <button type="submit" 
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-r-lg">
+            Buscar
+        </button>
+        </div>
+    </form>
+
+    <a href="{% url 'contactos_create' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+        Nuevo Contacto
+    </a>
+
+</div>
+
+<div class="bg-white shadow-xl rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg">id</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefono</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Creado</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modificado</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg"></th>
+            </tr>
+        </thead>
+
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for contacto in contactos %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 text-sm text-gray-900">{{ contacto.id }}</td>
+                <td class="px-6 py-4 text-sm text-gray-700">{{ contacto.nombre }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ contacto.telefono }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ contacto.correo }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ contacto.rol.rol }} - {{ contacto.rol.region }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ contacto.descripcion }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ contacto.fecha_creacion|date:"Y-m-d H:i" }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">{{ contacto.fecha_modificacion|date:"Y-m-d H:i" }}</td>
+                
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+                    <div class="relative inline-block text-left" x-data="{ open: false }" x-on:click.outside="open = false">
+                        
+                        <div>
+                            <button 
+                                type="button" 
+                                class="flex items-center justify-center p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                                x-on:click="open = !open"
+                                aria-haspopup="true" 
+                                x-bind:aria-expanded="open">
+                                
+                                <span class="sr-only">Abrir menú</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div 
+                            x-show="open"
+                            x-transition:enter="..."
+                            x-transition:enter-start="..."
+                            x-transition:enter-end="..."
+                            x-transition:leave="..."
+                            x-transition:leave-start="..."
+                            x-transition:leave-end="..."
+                            class="origin-bottom-right absolute right-0 z-10 mb-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none bottom-full"
+                            role="menu" 
+                            aria-orientation="vertical">
+                            
+                            <div class="py-1" role="none">
+                                <a href="{% url 'contactos_update' contacto.id %}" 
+                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" 
+                                role="menuitem">
+                                    Editar
+                                </a>
+                                
+                                <form method="post" action="{% url 'contactos_delete' contacto.id %}" role="none" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este contacto?');">
+                                    {% csrf_token %}
+                                    <button 
+                                        type="submit" 
+                                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-800" 
+                                        role="menuitem">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="px-6 py-12 text-center text-gray-500">No hay contactos registrados</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+

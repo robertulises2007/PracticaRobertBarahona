@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6 bg-white rounded-xl shadow">
+  <h1 class="text-2xl font-semibold mb-4">Agregar / Editar Contacto</h1>
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div>
+      <label class="block font-medium text-gray-700">Nombre Completo</label>
+      {{ form.nombre }}
+      {{ form.nombre.errors }}
+    </div>
+
+    <div>
+      <label class="block font-medium text-gray-700">Teléfono</label>
+      {{ form.telefono }}
+      {{ form.telefono.errors }}
+    </div>
+
+    <div>
+      <label class="block font-medium text-gray-700">Correo Electrónico</label>
+      {{ form.correo }}
+      {{ form.correo.errors }}
+    </div>
+
+    <div>
+      <label class="block font-medium text-gray-700">Rol Asignado</label>
+      {{ form.rol }}
+      {{ form.rol.errors }}
+    </div>
+
+    <div>
+      <label class="block font-medium text-gray-700">Descripción</label>
+      {{ form.descripcion }}
+      {{ form.descripcion.errors }}
+    </div>
+
+    <div class="flex justify-end gap-4 pt-4">
+      <a href="{% url 'contactos_list' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg">Cancelar</a>
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">Guardar</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

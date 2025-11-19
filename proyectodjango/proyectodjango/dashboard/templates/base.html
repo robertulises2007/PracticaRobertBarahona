@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAVANDERIA Dashboard</title>
+</head>
+<body class="font-sans bg-gray-50 flex flex-col h-screen">
+
+    <header class="bg-white py-2.5 px-5 border-b border-gray-200 shadow-md flex items-center shrink-0">
+        <img src="{% static 'img/logo.jpg' %}" alt="INTERMODA" width="80" >
+        <h1 class="text-xl ml-2.5 font-bold">CHATBOT</h1>
+        <h1 class="text-xs font-medium text-gray-500">  Dashboard</h1>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <div class="w-[220px] h-full bg-white border-r border-gray-200 shadow-[2px_0_5px_rgba(0,0,0,0.05)] p-5 flex flex-col shrink-0">
+            
+            <a href="{% url 'roles_list' %}" 
+               class="block p-2.5 rounded-md no-underline mb-2.5 
+                      hover:bg-[#f0e9ff] hover:text-[#8000ff]
+                      {% if request.path == '/roles/' %}
+                        bg-[#f0e9ff] text-[#8000ff]
+                      {% else %}
+                        text-gray-800
+                      {% endif %}">
+                &#x1F4C5; Roles
+            </a>
+            
+            <a href="{% url 'contactos_list' %}" 
+               class="block p-2.5 rounded-md no-underline mb-2.5 
+                      hover:bg-[#f0e9ff] hover:text-[#8000ff]
+                      {% if request.path == '/contactos/' %}
+                        bg-[#f0e9ff] text-[#8000ff]
+                      {% else %}
+                        text-gray-800
+                      {% endif %}">
+                &#x1F4C5; Contactos
+            </a>
+
+            <a href="{% url 'conversaciones_list' %}" 
+               class="block p-2.5 rounded-md no-underline mb-2.5 
+                      hover:bg-[#f0e9ff] hover:text-[#8000ff]
+                      {% if request.path == '/conversaciones/' %}
+                        bg-[#f0e9ff] text-[#8000ff]
+                      {% else %}
+                        text-gray-800
+                      {% endif %}">
+                &#x1F4C5; Conversaciones
+            </a>
+
+            <a href="{% url 'campanias_list' %}" 
+                class="block p-2.5 rounded-md no-underline mb-2.5 
+                        hover:bg-[#f0e9ff] hover:text-[#8000ff]
+                        {% if request.path == '/campanias/' %}
+                            bg-[#f0e9ff] text-[#8000ff]
+                        {% else %}
+                            text-gray-800
+                        {% endif %}">
+                 &#x1F4C5; Campañas
+            </a>
+
+            <a href="{% url 'logout' %}" 
+               class="block no-underline mt-auto bg-zinc-400 text-white py-[5px] px-2.5 rounded text-center
+                      hover:bg-zinc-700">
+                Cerrar sesión
+            </a>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-5">
+            {% block content %}{% endblock %}
+        </div>
+
+    </div>
+
+</body>
+</html>

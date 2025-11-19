@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load time_ago %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-2xl font-bold mb-3">Conversaciones</h2>
+
+    <div class="shadow-lg rounded-lg bg-white">
+        <table class="table-auto w-full border-collapse">
+            <thead class="bg-gray-200 text-gray-600 uppercase text-sm">
+                <tr>
+                    <th class="px-6 py-3 text-left rounded-tl-lg">ID</th>
+                    <th class="px-6 py-3 text-left">Contacto</th>
+                    <th class="px-6 py-3 text-left">Fecha creación</th>
+                    <th class="px-6 py-3 text-left">Último mensaje</th>
+                    <th class="px-6 py-3 text-left">Mensajes enviados</th>
+                    <th class="px-6 py-3 text-left">Conversación anterior</th>
+                    <th class="px-6 py-3 text-center rounded-tl-lg"></th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700">
+                {% for c in conversaciones %}
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="px-6 py-3">{{ c.id }}</td>
+                    <td class="px-6 py-3">{{ c.contacto.id }} - {{ c.contacto.nombre }}</td>
+                    <td class="px-6 py-3">{{ c.fecha_creacion|date:"d/m/Y h:i A" }}</td>
+                    <td class="px-6 py-3">{{ c.ultimo_mensaje|time_ago }}</td>
+                    <td class="px-6 py-3">{{ c.mensajes_enviados }}</td>
+                    <td class="px-6 py-3">
+                        {% if c.conversacion_anterior %}
+                            {{ c.conversacion_anterior.id }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+                        <div class="relative inline-block text-left" x-data="{ open: false }" x-on:click.outside="open = false">
+                            
+                            <div>
+                                <button 
+                                    type="button" 
+                                    class="flex items-center justify-center p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                                    x-on:click="open = !open"
+                                    aria-haspopup="true" 
+                                    x-bind:aria-expanded="open">
+                                    
+                                    <span class="sr-only">Abrir menú</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                                        <circle cx="12" cy="12" r="1"></circle>
+                                        <circle cx="12" cy="5" r="1"></circle>
+                                        <circle cx="12" cy="19" r="1"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div 
+                                x-show="open"
+                                x-transition:enter="..."
+                                x-transition:enter-start="..."
+                                x-transition:enter-end="..."
+                                x-transition:leave="..."
+                                x-transition:leave-start="..."
+                                x-transition:leave-end="..."
+                                class="origin-bottom-right absolute right-0 z-10 mb-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none bottom-full"
+                                role="menu" 
+                                aria-orientation="vertical">
+                                
+                                <div class="py-1" role="none">
+                                    <a href="{% url 'conversaciones_update' c.id %}" 
+                                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" 
+                                    role="menuitem">
+                                        Editar
+                                    </a>
+
+                                    <a href="{% url 'mensajes_view' c.id %}" 
+                                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" 
+                                    role="menuitem">
+                                        💬 Mensajes 
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="px-6 py-3 text-center text-gray-500">No hay conversaciones registradas.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

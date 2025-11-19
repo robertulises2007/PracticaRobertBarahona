@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">
+        Gestión de Campañas
+    </h2>
+    <a href="{% url 'campanias_create' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+        Agregar Campaña
+    </a>
+</div>
+
+<div class="bg-white shadow-xl rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Encabezado</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Arte</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Creación</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Última Modificación</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Programada</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase"></th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for c in campanias %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 text-sm text-gray-900">{{ forloop.counter }}</td>
+                <td class="px-6 py-4 text-sm text-gray-800">{{ c.encabezado }}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                    {% if c.arte %}
+                        <a href="{{ c.arte.url }}" target="_blank" class="text-blue-600 hover:underline">Ver archivo</a>
+                    {% else %}
+                        No adjunto
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                    {{ c.fechaCreacion|date:"d/m/Y H:i" }}
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                    {{ c.fechaModificacion|date:"d/m/Y H:i" }}
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-500">
+                    {{ c.fechaProgramada|date:"d/m/Y H:i" }}
+                </td>
+
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+                    <div class="relative inline-block text-left" x-data="{ open: false }" x-on:click.outside="open = false">
+                        
+                        <div>
+                            <button 
+                                type="button" 
+                                class="flex items-center justify-center p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                                x-on:click="open = !open"
+                                aria-haspopup="true" 
+                                x-bind:aria-expanded="open">
+                                
+                                <span class="sr-only">Abrir menú</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div 
+                            x-show="open"
+                            x-transition:enter="..."
+                            x-transition:enter-start="..."
+                            x-transition:enter-end="..."
+                            x-transition:leave="..."
+                            x-transition:leave-start="..."
+                            x-transition:leave-end="..."
+                            class="origin-bottom-right absolute right-0 z-10 mb-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none bottom-full"
+                            role="menu" 
+                            aria-orientation="vertical">
+                            
+                            <div class="py-1" role="none">
+                                <a href="{% url 'campanias_update' c.id %}" 
+                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" 
+                                role="menuitem">
+                                    Editar
+                                </a> 
+                                
+                                <a href="{% url 'campanias_preview' c.id %}"  
+                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" 
+                                role="menuitem">
+                                    Vista Previa
+                                </a>
+
+                                <form method="post" action="{% url 'campanias_delete' c.id %}" role="none" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este rol?');">
+                                    {% csrf_token %}
+                                    <button 
+                                        type="submit" 
+                                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-800" 
+                                        role="menuitem">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                    No hay campañas registradas
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
